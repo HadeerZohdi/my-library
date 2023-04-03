@@ -1,0 +1,47 @@
+.bg-image {
+  width: 300px;
+  min-width: 200px;
+  background-image: url("../assets/pattern2.jpg");
+  background-size: contain;
+  box-shadow: inset -3px -12px 15px 0px #726f6f75;
+}
+
+.bg-image-mobile {
+  background-image: url("../assets/pattern2.jpg");
+  background-size: contain;
+  /* box-shadow: inset 1px -2px 20px 0px #726f6f75; */
+}
+
+.app {
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
+}
+
+.body-width {
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .body-width {
+    width: 75%;
+  }
+}
+
+@media (max-width: 575px) {
+  .content-body {
+    width: 92%;
+    background-color: white;
+    margin: -70px auto 0 auto;
+    box-shadow: 0 -8px 8px 0px #cdcccc75;
+    border-radius: 10px;
+    min-height: 100vh;
+    position: relative;
+  }
+}
+
+/* .footer {
+  position: absolute;
+  bottom: 0;
+  width: 75%;
+} */
