@@ -1,9 +1,4 @@
-import {
-  Routes,
-  Route,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layout";
 import Home from "./pages/home";
 import MyLibrary from "./pages/myLibrary";
@@ -27,18 +22,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <RouterProvider router={router} />
-    // <AppLayout>
-    //   <Routes>
-    //     <Route path="/" element={<Home />} />
-    //     <Route path="/my-library" element={<MyLibrary />} />
-    //     <Route path="/" element={<HowToUse />} />
-    //     <Route path="/view-book/:bookId" element={<ViewBook />} />
-    //     <Route path="/book-form" element={<AddBook />} />
-    //   </Routes>
-    // </AppLayout>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
