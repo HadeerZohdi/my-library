@@ -13,7 +13,6 @@ const AddBook = () => {
     onAddBook,
     navigate,
     countError,
-    handleCountError,
   } = useBookForm();
 
   const handleFormView = useMemo(() => {
@@ -93,20 +92,19 @@ const AddBook = () => {
 
               {/* Currently Reading */}
               <div className="w-100 my-1 d-flex flex-column align-items-start">
-                <label htmlFor="pageCount" className="my-2">
+                <label htmlFor="currentlyReading" className="my-2">
                   Currently Reading Page
                 </label>
 
                 <div className="w-100 d-flex flex-column">
                   <Input
                     type="number"
-                    name="pageCount"
-                    id="pageCount"
+                    name="currentlyReading"
+                    id="currentlyReading"
                     placeholder="Currently Reading"
                     allowClear
                     value={formData?.currentlyReading}
                     onChange={handleChangeForm("currentlyReading")}
-                    onInput={handleCountError}
                     className="py-2 px-3"
                   />
                 </div>

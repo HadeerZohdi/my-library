@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { message } from "antd";
 import { db } from "../../../firebase";
@@ -72,6 +72,12 @@ const useBookForm = () => {
       message.error("Please fill all required fields *");
       return;
     }
+    if (formData.currentlyReading > formData.pageCount) {
+      return message.error(
+        "Currently Reading Pge must be less than Total Page Count"
+      );
+    }
+
     if (isEdit === true) {
       setLoading(true);
       const book = doc(db, "books", openBook.id);
@@ -90,13 +96,13 @@ const useBookForm = () => {
     }
   };
 
-  const handleCountError = () => {
-    if (formData?.pageCount < formData?.currentlyReading) {
-      setCountError(true);
-    } else {
-      setCountError(false);
-    }
-  };
+  // const handleCountError = () => {
+  //   if (formData?.currentlyReading > formData?.pageCount) {
+  //     setCountError(true);
+  //   } else {
+  //     setCountError(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (openBook) getItemById();
@@ -110,7 +116,6 @@ const useBookForm = () => {
     onAddBook,
     navigate,
     countError,
-    handleCountError,
   };
 };
 
