@@ -1,9 +1,28 @@
+import { NavLink, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { Divider, message } from "antd";
 import { Navbar as NavbarBS, Nav, Container, Button } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { auth } from "../../firebase";
+import AppUsage from "../../components/appUsage";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("@my-library");
+      navigate("/signin");
+    } catch {
+      message.error("Signout Failed");
+    }
+  };
+
   return (
     <NavbarBS className="mb-4 px-sm-5 shadow-sm">
+      <AppUsage openModal={openModal} setOpenModal={setOpenModal} />
       <Container>
         <Nav className="me-auto">
           <Nav.Link as={NavLink} to="/">
@@ -11,15 +30,27 @@ const Navbar = () => {
           </Nav.Link>
 
           <Nav.Link as={NavLink} to="/my-library">
-            My Library
-          </Nav.Link>
-
-          <Nav.Link as={NavLink} to="/how-to-use">
-            How to Use
+            Library
           </Nav.Link>
         </Nav>
 
-        <span>Sign Out</span>
+        <Button
+          variant="link"
+          style={{ textDecoration: "none", fontSize: "14px", padding: 1 }}
+          onClick={() => setOpenModal(true)}
+        >
+          How to Use
+        </Button>
+
+        <Divider type="vertical" />
+
+        <Button
+          variant="link"
+          style={{ textDecoration: "none", fontSize: "14px", padding: 1 }}
+          onClick={handleSignout}
+        >
+          Sign Out
+        </Button>
       </Container>
     </NavbarBS>
   );

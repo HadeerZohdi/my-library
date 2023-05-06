@@ -1,28 +1,41 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+  useLocation,
+} from "react-router-dom";
 import AppLayout from "./layout";
 import Home from "./pages/home";
 import MyLibrary from "./pages/myLibrary";
-import HowToUse from "./pages/howToUse";
-import ViewBook from "./pages/viewBook";
 import AddBook from "./pages/bookForm";
+import Signin from "./pages/auth/signin";
+import Signup from "./pages/auth/signup";
+import { AuthProvider } from "./store/authContext";
+import { UserProvider } from "./store/userContext";
 import "./index.css";
+
+const User = localStorage.getItem("@my-library");
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
+    element: User ? <AppLayout /> : <Navigate to="signin" />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/my-library", element: <MyLibrary /> },
-      { path: "/how-to-use", element: <HowToUse /> },
-      { path: "/view-book/:bookId", element: <ViewBook /> },
-      { path: "/book-form", element: <AddBook /> },
+      { path: "my-library", element: <MyLibrary /> },
+      { path: "book-form", element: <AddBook /> },
     ],
   },
+  { path: "signin", element: <Signin /> },
+  { path: "signup", element: <Signup /> },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  );
 }
 
 export default App;

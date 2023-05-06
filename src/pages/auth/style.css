@@ -1,0 +1,21 @@
+.bg-image-auth {
+  width: 100%;
+  padding: 150px;
+  background-image: url("../../assets/pattern2.jpg");
+  background-size: contain;
+  box-shadow: inset 1px 7px 20px 0px #726f6f75;
+}
+
+.form-wrap {
+  margin-top: -150px;
+  position: relative;
+  border-radius: 20px;
+  box-shadow: 0px 0px 12px 0px #726f6f75;
+  width: 50%;
+}
+
+@media (max-width: 700px) {
+  .form-wrap {
+    width: 90%;
+  }
+}

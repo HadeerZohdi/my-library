@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { Select, Spin, Input } from "antd";
+import { Select, Spin, Input, Tooltip } from "antd";
 import UploadPhoto from "../../components/UploadPhoto";
 import useBookForm from "./hooks/useBookForm";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const AddBook = () => {
   const {
@@ -22,10 +23,11 @@ const AddBook = () => {
       return (
         <div className="min-vh-100 w-100 py-4 d-flex flex-column align-items-center justify-content-center">
           <form className="w-75 p-4 d-flex flex-column rounded shadow-sm">
+            <h5>Book Information</h5>
             {/* Cover */}
             <div className="w-100 my-1 d-flex flex-column flex-sm-row align-items-start justify-content-between">
               <div className="d-flex flex-column align-items-start">
-                <label htmlFor="title" className="my-2">
+                <label htmlFor="title" className="my-2 fw-semibold">
                   Book Cover
                 </label>
 
@@ -38,7 +40,7 @@ const AddBook = () => {
               <div className="w-100 ms-sm-4 d-flex flex-column align-items-start">
                 {/* Title */}
                 <div className="w-100 my-1 d-flex flex-column align-items-start">
-                  <label htmlFor="title" className="my-2">
+                  <label htmlFor="title" className="my-2 fw-semibold">
                     Book Title <span className="text-danger">*</span>
                   </label>
                   <Input
@@ -55,7 +57,7 @@ const AddBook = () => {
 
                 {/* Author */}
                 <div className="w-100 my-1 d-flex flex-column align-items-start">
-                  <label htmlFor="author" className="my-2">
+                  <label htmlFor="author" className="my-2 fw-semibold">
                     Book Author <span className="text-danger">*</span>
                   </label>
                   <Input
@@ -75,11 +77,11 @@ const AddBook = () => {
             <div className="my-1 d-flex flex-column flex-sm-row align-items-start justify-content-between">
               {/* Page Count */}
               <div className="w-100 me-sm-3 my-1 d-flex flex-column align-items-start">
-                <label htmlFor="pageCount" className="my-2">
+                <label htmlFor="pageCount" className="my-2 fw-semibold">
                   Page Count
                 </label>
                 <Input
-                  type="number"
+                  // type="number"
                   name="pageCount"
                   id="pageCount"
                   placeholder="Totla Page Count"
@@ -92,33 +94,36 @@ const AddBook = () => {
 
               {/* Currently Reading */}
               <div className="w-100 my-1 d-flex flex-column align-items-start">
-                <label htmlFor="currentlyReading" className="my-2">
+                <label htmlFor="currentlyReading" className="my-2 fw-semibold">
                   Currently Reading Page
                 </label>
 
                 <div className="w-100 d-flex flex-column">
                   <Input
-                    type="number"
+                    // type="number"
                     name="currentlyReading"
                     id="currentlyReading"
                     placeholder="Currently Reading"
                     allowClear
-                    value={formData?.currentlyReading}
+                    value={
+                      formData?.readingStatus === "Finish"
+                        ? formData?.pageCount
+                        : formData?.currentlyReading
+                    }
                     onChange={handleChangeForm("currentlyReading")}
                     className="py-2 px-3"
                   />
                 </div>
-                {countError && (
-                  <small className="text-danger">
-                    Currently reading page must be less that total page count
-                  </small>
-                )}
+
+                <small className="text-muted ms-1">
+                  Must be less that total page count
+                </small>
               </div>
             </div>
 
             {/* Reading Status */}
-            <div className="w-100 my-1 d-flex flex-column align-items-start">
-              <label htmlFor="readingStatus" className="my-2">
+            <div className="w-100 mb-1 d-flex flex-column align-items-start">
+              <label htmlFor="readingStatus" className="my-2 fw-semibold">
                 Reading Status <span className="text-danger">*</span>
               </label>
               <Select
@@ -148,7 +153,7 @@ const AddBook = () => {
             {/* Category */}
             <div className="w-100 my-1 d-flex flex-column flex-sm-row align-items-center justify-content-between">
               <div className="w-100 me-sm-3 d-flex flex-column align-items-start">
-                <label htmlFor="category" className="my-2">
+                <label htmlFor="category" className="my-2 fw-semibold">
                   Category
                 </label>
                 <Select
@@ -198,8 +203,8 @@ const AddBook = () => {
                       label: "eBook",
                     },
                     {
-                      value: "PaperPack",
-                      label: "PaperPack",
+                      value: "Hard Copy",
+                      label: "Hard Copy",
                     },
                   ]}
                 />
@@ -208,7 +213,7 @@ const AddBook = () => {
 
             {/* description */}
             <div className="w-100 my-1 d-flex flex-column align-items-start">
-              <label htmlFor="description" className="my-2">
+              <label htmlFor="description" className="my-2 fw-semibold">
                 Description
               </label>
               <Input.TextArea
@@ -222,8 +227,63 @@ const AddBook = () => {
               />
             </div>
 
+            {/* Your Ideas Corner */}
+            <div className="w-100 my-4 d-flex flex-column align-items-start border-top py-3">
+              <h5>Your Ideas Corner</h5>
+
+              {/* Notes/Quotes */}
+              <div className="w-100 my-1 d-flex flex-column align-items-start">
+                <label
+                  htmlFor="notes"
+                  className="my-2 fw-semibold d-flex align-items-center"
+                >
+                  Quotes and Notes
+                  <Tooltip
+                    title="memorize important things!"
+                    className="mx-2 cursor-pointer"
+                  >
+                    <ExclamationCircleOutlined />
+                  </Tooltip>
+                </label>
+                <Input.TextArea
+                  name="notes"
+                  id="notes"
+                  allowClear
+                  placeholder="save your favorite quotes and notes about your book"
+                  value={formData?.notes}
+                  onChange={handleChangeForm("notes")}
+                  className="py-2 px-3"
+                />
+              </div>
+
+              {/* Review */}
+              <div className="w-100 my-1 d-flex flex-column align-items-start">
+                <label
+                  htmlFor="review"
+                  className="my-2 fw-semibold d-flex align-items-center"
+                >
+                  Book Review
+                  <Tooltip
+                    title="save your review and share later with your friends"
+                    className="mx-2 cursor-pointer"
+                  >
+                    <ExclamationCircleOutlined />
+                  </Tooltip>
+                </label>
+                <Input.TextArea
+                  name="review"
+                  id="review"
+                  allowClear
+                  placeholder="Book Review"
+                  value={formData?.review}
+                  onChange={handleChangeForm("review")}
+                  className="py-2 px-3"
+                />
+              </div>
+            </div>
+
             {/* Buttons */}
-            <div className="w-100 d-flex align-items-center justify-content-end mt-4">
+            <div className="w-100 d-flex align-items-center justify-content-end mt-1">
               <Button
                 onClick={() => navigate(-1)}
                 className="btn btn-danger"

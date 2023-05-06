@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "react-bootstrap";
-import { Spin, Table, InputNumber } from "antd";
+import { Spin, Table, InputNumber, Select } from "antd";
 import useRequest from "../../globalRequestHook/useRequest";
-import "../style.css";
 import ProgressBar from "../../components/ProgressBar";
+import imagePlaceholder from "../../assets/placeholder.png";
+import "../style.css";
 
 const MyLibrary = () => {
   const {
@@ -13,7 +14,9 @@ const MyLibrary = () => {
     booksData,
     onDeleteBook,
     updateCurrentReading,
+    updateReadingStatus,
   } = useRequest();
+
   const navigate = useNavigate();
 
   function columsGenerator() {
@@ -29,7 +32,11 @@ const MyLibrary = () => {
         key: "cover",
         render: (cover: string) => (
           <div className="cover-img-div">
-            <img src={cover} alt="cover" className="cover-img " />
+            {cover ? (
+              <img src={cover} alt="cover" className="cover-img " />
+            ) : (
+              <img src={imagePlaceholder} alt="cover" className="cover-img " />
+            )}
           </div>
         ),
       },
@@ -78,10 +85,32 @@ const MyLibrary = () => {
       },
       {
         title: "Reading Status",
-        dataIndex: "readingStatus",
-        key: "readingStatus",
-        render: (readingStatus: string) => (
-          <p className="text-[var(--gray-color-6b)]">{readingStatus}</p>
+        dataIndex: "",
+        key: "",
+        render: (item: any) => (
+          <Select
+            placeholder="Reading Status"
+            showArrow
+            allowClear
+            style={{ width: "100%" }}
+            value={item.readingStatus}
+            // onChange={handleChangeForm("readingStatus")}
+            onChange={(e) => updateReadingStatus(e, item)}
+            options={[
+              {
+                value: "Reading",
+                label: "Reading",
+              },
+              {
+                value: "Finish",
+                label: "Finish",
+              },
+              {
+                value: "Plan to read",
+                label: "Plan to read",
+              },
+            ]}
+          />
         ),
       },
       {
@@ -103,8 +132,9 @@ const MyLibrary = () => {
           } else {
             return (
               <InputNumber
+                disabled={!item.pageCount || item.pageCount == 0}
                 min={1}
-                defaultValue={1}
+                defaultValue={null}
                 controls={false}
                 type="number"
                 style={{ width: "60px" }}
@@ -123,7 +153,11 @@ const MyLibrary = () => {
         key: "progress",
         render: (item: any) => {
           let percent = (item?.currentlyReading / item?.pageCount) * 100;
-          return <ProgressBar progressPercent={percent} />;
+          return (
+            <ProgressBar
+              progressPercent={item.readingStatus === "Finish" ? 100 : percent}
+            />
+          );
         },
       },
 
@@ -158,9 +192,9 @@ const MyLibrary = () => {
 
   const handleLibraryView = useMemo(() => {
     return (
-      <div className="min-vh-100 w-100 px-4 px-sm-5 py-4 d-flex flex-column">
+      <div className="w-100 min-vh-100 p-4 d-flex flex-column align-items-center">
         <div className="w-100 mb-4 d-flex align-items-center justify-content-between">
-          <h4 className="mb-2">MyLibrary</h4>
+          <h6 className="mb-2">MyLibrary</h6>
           <Button
             onClick={() => navigate("/book-form")}
             className="btn btn-success"
@@ -195,3 +229,18 @@ const MyLibrary = () => {
 };
 
 export default MyLibrary;
+
+// item.readingStatus === "Finish" ||
+//                   parseInt(item.currentlyReading) > parseInt(item.pageCount)
+//                     ? item.pageCount
+//                     : item.readingStatus === "Plan to read"
+//                     ? 0
+//                     :
+
+// (item.pageCount != null &&
+//   parseInt(item.currentlyReading) === parseInt(item.pageCount)) ||
+// parseInt(item.currentlyReading) > parseInt(item.pageCount)
+//   ? "Finish"
+//   : parseInt(item.currentlyReading) == 0
+//   ? "Plan to read"
+//   :

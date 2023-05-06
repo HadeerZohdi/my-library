@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { message } from "antd";
-import { db } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 import {
   addDoc,
   collection,
@@ -9,15 +9,17 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
+import { useUserStore } from "../../../store/userContext";
 
 const initialState: booksDataInterface = {
-  id: "",
+  // id: Math.random(),
   title: "",
   author: "",
   readingStatus: "",
-  pageCount: undefined, // for reading progress
-  currentlyReading: undefined,
+  pageCount: null, // for reading progress
+  currentlyReading: null,
   bookType: "", // eBook or paper pack
   cover: "",
   category: "",
@@ -25,16 +27,18 @@ const initialState: booksDataInterface = {
 };
 
 interface booksDataInterface {
-  id: string;
+  // id: number;
   title: string;
   author: string;
   readingStatus: string;
-  pageCount: number | undefined; // for reading progress
-  currentlyReading: number | undefined;
+  pageCount: number | null; // for reading progress
+  currentlyReading: number | null;
   bookType?: string; // eBook or paper pack
   cover?: string;
   category?: string;
   description?: string;
+  notes?: string;
+  review?: string;
 }
 const useBookForm = () => {
   const [loading, setLoading] = useState(false);
@@ -43,9 +47,18 @@ const useBookForm = () => {
   const [countError, setCountError] = useState(false);
 
   const navigate = useNavigate();
-  const booksCollection = collection(db, "books");
+  const { userState } = useUserStore();
+
+  const booksCollection = collection(db, "users");
   const location = useLocation();
   const openBook = location.state;
+
+  const currUser: any = localStorage.getItem("@my-library");
+  let User = JSON.parse(currUser);
+  let userID = User?.userId;
+
+  const docRef = doc(db, "users", userID);
+  const colRef = collection(docRef, "books");
 
   const handleChangeForm = (name: string) => (event: any) => {
     setFormData((old: any) => ({
@@ -60,27 +73,30 @@ const useBookForm = () => {
 
   const getItemById = async () => {
     setIsEdit(true);
-    const book = doc(db, "books", openBook.id);
-    const response = await getDoc(book);
-    setFormData(response.data());
+    // const book = doc(db, "books", openBook.id);
+    const book = doc(colRef, openBook.id);
+    const response = (await getDoc(book)).data();
+    setFormData(response);
   };
 
   // Add a book
   const onAddBook = async (e: any) => {
     e.preventDefault();
-    if (!formData?.title || !formData.author || !formData.readingStatus) {
+    if (!formData.title || !formData.author || !formData.readingStatus) {
       message.error("Please fill all required fields *");
       return;
     }
-    if (formData.currentlyReading > formData.pageCount) {
+
+    if (parseInt(formData?.currentlyReading) > parseInt(formData?.pageCount)) {
       return message.error(
-        "Currently Reading Pge must be less than Total Page Count"
+        "Currently Reading Page must be less than Total Page Count"
       );
     }
 
     if (isEdit === true) {
       setLoading(true);
-      const book = doc(db, "books", openBook.id);
+      // const book = doc(db, "books", openBook.id);
+      const book = doc(colRef, openBook.id);
       const body = { ...formData };
       await updateDoc(book, body);
       setLoading(false);
@@ -88,7 +104,13 @@ const useBookForm = () => {
       navigate("/my-library");
     } else {
       setLoading(true);
-      await addDoc(booksCollection, formData);
+      // await addDoc(booksCollection, formData);
+
+      const bookData = { ...formData, id: docRef.id };
+      await addDoc(colRef, {
+        ...bookData,
+      });
+
       setLoading(false);
       message.success("Book Added Successfully");
       setFormData(initialState);
@@ -96,17 +118,22 @@ const useBookForm = () => {
     }
   };
 
-  // const handleCountError = () => {
-  //   if (formData?.currentlyReading > formData?.pageCount) {
-  //     setCountError(true);
-  //   } else {
-  //     setCountError(false);
-  //   }
-  // };
-
   useEffect(() => {
     if (openBook) getItemById();
   }, [openBook]);
+
+  useEffect(() => {
+    if (
+      formData?.currentlyReading &&
+      formData?.currentlyReading === formData?.pageCount
+    ) {
+      setFormData((old: any) => ({ ...old, readingStatus: "Finish" }));
+    }
+  }, [
+    formData?.currentlyReading,
+    formData?.pageCount,
+    formData?.readingStatus,
+  ]);
 
   return {
     loading,

@@ -1,20 +1,19 @@
 import { useMemo } from "react";
-import { InputNumber, Spin, Table } from "antd";
 import { useNavigate } from "react-router";
+import { InputNumber, Select, Spin, Table, Tooltip } from "antd";
 import useRequest from "../../../../globalRequestHook/useRequest";
 import ProgressBar from "../../../../components/ProgressBar";
+import imagePlaceholder from "../../../../assets/placeholder.png";
 
 const BookList: React.FC = () => {
   const {
     loading,
     booksData,
-    readingLoading,
     onDeleteBook,
     updateCurrentReading,
+    updateReadingStatus,
   } = useRequest();
   const navigate = useNavigate();
-
-  let timer: any;
 
   // function debounce(func: (e: any, item: any) => void, timeout = 300) {
   //   let timer: any;
@@ -41,7 +40,11 @@ const BookList: React.FC = () => {
         key: "cover",
         render: (cover: string) => (
           <div className="cover-img-div">
-            <img src={cover} alt="cover" className="cover-img " />
+            {cover ? (
+              <img src={cover} alt="cover" className="cover-img " />
+            ) : (
+              <img src={imagePlaceholder} alt="cover" className="cover-img " />
+            )}
           </div>
         ),
       },
@@ -90,10 +93,32 @@ const BookList: React.FC = () => {
       },
       {
         title: "Reading Status",
-        dataIndex: "readingStatus",
-        key: "readingStatus",
-        render: (readingStatus: string) => (
-          <p className="text-[var(--gray-color-6b)]">{readingStatus}</p>
+        dataIndex: "",
+        key: "",
+        render: (item: any) => (
+          <Select
+            placeholder="Reading Status"
+            showArrow
+            allowClear
+            style={{ width: "100%" }}
+            value={item.readingStatus}
+            // onChange={handleChangeForm("readingStatus")}
+            onChange={(e) => updateReadingStatus(e, item)}
+            options={[
+              {
+                value: "Reading",
+                label: "Reading",
+              },
+              {
+                value: "Finish",
+                label: "Finish",
+              },
+              {
+                value: "Plan to read",
+                label: "Plan to read",
+              },
+            ]}
+          />
         ),
       },
       {
@@ -110,22 +135,19 @@ const BookList: React.FC = () => {
         key: "",
         editable: true,
         render: (item: any) => {
-          if (readingLoading) {
-            return <Spin />;
-          } else {
-            return (
-              <InputNumber
-                min={1}
-                defaultValue={1}
-                controls={false}
-                style={{ width: "60px" }}
-                value={item.currentlyReading}
-                // onChange={(e) => updateCurrentReading(e, item)}
-                onBlur={(e) => updateCurrentReading(e, item)}
-                onPressEnter={(e) => updateCurrentReading(e, item)}
-              />
-            );
-          }
+          return (
+            <InputNumber
+              disabled={!item.pageCount || item.pageCount == 0}
+              min={1}
+              defaultValue={null}
+              controls={false}
+              style={{ width: "60px" }}
+              value={item.currentlyReading}
+              // onChange={(e) => updateCurrentReading(e, item)}
+              onBlur={(e) => updateCurrentReading(e, item)}
+              onPressEnter={(e) => updateCurrentReading(e, item)}
+            />
+          );
         },
       },
       {
@@ -133,7 +155,11 @@ const BookList: React.FC = () => {
         key: "progress",
         render: (item: any) => {
           let percent = (item?.currentlyReading / item?.pageCount) * 100;
-          return <ProgressBar progressPercent={percent} />;
+          return (
+            <ProgressBar
+              progressPercent={item.readingStatus === "Finish" ? 100 : percent}
+            />
+          );
         },
       },
 
@@ -170,7 +196,7 @@ const BookList: React.FC = () => {
     return (
       <div className="w-100 py-4 px-4 px-sm-5 d-flex flex-column">
         <div className="w-100 d-flex flex-column">
-          <h5 className="mb-4">Recently Added Books</h5>
+          <h6 className="mb-4">Recently Added Books</h6>
 
           <div className="overflow-auto shadow-sm rounded">
             {loading ? (
@@ -181,14 +207,14 @@ const BookList: React.FC = () => {
               <Table
                 pagination={false}
                 columns={columsGenerator()}
-                dataSource={booksData.slice(0, 5)}
+                dataSource={booksData?.slice(0, 5)}
               />
             )}
           </div>
         </div>
 
         <div className="w-100 mt-5 d-flex flex-column">
-          <h5 className="mb-4">Currently Reading Books</h5>
+          <h6 className="mb-4">Currently Reading Books</h6>
 
           <div className="overflow-auto shadow-sm rounded">
             {loading ? (
@@ -208,7 +234,7 @@ const BookList: React.FC = () => {
         </div>
       </div>
     );
-  }, [loading, booksData, readingLoading]);
+  }, [loading, booksData]);
 
   return <>{handleHomeBookListView}</>;
 };
