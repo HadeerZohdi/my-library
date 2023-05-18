@@ -2,7 +2,6 @@ import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
-  useLocation,
 } from "react-router-dom";
 import AppLayout from "./layout";
 import Home from "./pages/home";
