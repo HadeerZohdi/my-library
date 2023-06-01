@@ -40,9 +40,9 @@ const useSignIn = () => {
           email: auth.currentUser.email,
           userId: auth.currentUser.uid,
         };
-        navigate("/", { replace: true });
         localStorage.setItem("@my-library", JSON.stringify(User));
         setUserState(User);
+        navigate("/");
         setLoading(false);
       }
     } catch (error) {

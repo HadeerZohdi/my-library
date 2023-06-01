@@ -12,11 +12,12 @@ const AppUsage = ({ openModal, setOpenModal }: Props) => {
       <h5 className="text-center my-3">How To Use</h5>
       <div className="w-100 rounded shadow-sm p-3 d-flex flex-column">
         <p>
-          This simple application is your digital library for tracking your
-          reading progress, setting your reading goals, and saving notes and
-          reviews of books you read. The home page shows the latest added 5
-          books, and your current reading list. The Library page shows all books
-          you have added.
+          This simple application is your digital tool for storing and tracking
+          your reading progress, setting your reading goals, saving notes and
+          reviews of books you read.
+          <br />
+          The home page shows the latest added 5 books, and your current reading
+          list. The Library page shows all books you have added.
         </p>
 
         <div className="w-100">
@@ -33,7 +34,7 @@ const AppUsage = ({ openModal, setOpenModal }: Props) => {
           <h6>Can I upload my books?</h6>
           <p>
             No, the purpose of this application is to track your readings, set
-            your reading goals, and memorize your notes and reviews.
+            your reading goals, and save your notes and reviews for later.
           </p>
         </div>
 
@@ -42,6 +43,10 @@ const AppUsage = ({ openModal, setOpenModal }: Props) => {
           <p>
             You can track reading a specific book by adding the total page count
             and your current reading page.
+            <br />
+            You can update your Reading Status input or Current Reading Page
+            input several times from Home's or Library's tables directly to
+            track your progress.
           </p>
         </div>
       </div>

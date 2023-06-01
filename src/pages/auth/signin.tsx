@@ -12,7 +12,7 @@ const Signin = () => {
     return (
       <div className="w-100 h-100">
         <div className="bg-image-auth"></div>
-        <div className="form-wrap w-50 mx-auto bg-white p-4">
+        <div className="form-wrap mx-auto bg-white p-4">
           <h6 className="text-center">Sign in</h6>
           <p className="text-center text-secondary">
             enter your email and password and start using your library!
