@@ -36,8 +36,8 @@ const useRequest = () => {
   let User = JSON.parse(currUser);
   let userID = User?.userId;
 
-  const docRef = doc(db, "users", userID);
-  const colRef = collection(docRef, "books");
+  const docRef = User && doc(db, "users", userID);
+  const colRef = User && collection(docRef, "books");
 
   // Get user data
   const getUserData = useCallback(async () => {

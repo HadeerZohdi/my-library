@@ -6,8 +6,6 @@ import QuotesCarousel from "./QuotesCarousel";
 import { useUserStore } from "../store/userContext";
 import logo from "../assets/my-library-fav.png";
 
-import { auth } from "../firebase";
-
 const AppLayout = () => {
   const { userState } = useUserStore();
 
@@ -42,6 +40,7 @@ const AppLayout = () => {
           <Outlet />
         </div>
 
+        {/* footer */}
         <div className="w-100 d-flex flex-column flex-sm-row align-items-center justify-content-between bg-light shadow-lg px-4 py-2 flex-shrink-0">
           <small>
             Developed by: <span className="fw-bolder">Hadeer Zohdi</span>

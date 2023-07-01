@@ -62,7 +62,8 @@ const useSignUp = () => {
         };
         localStorage.setItem("@my-library", JSON.stringify(User));
         setUserState(User);
-        navigate("/");
+        navigate("/", { replace: true });
+        window.location.reload();
       });
 
       // if (response.user) {

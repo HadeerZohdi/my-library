@@ -22,7 +22,7 @@ const AddBook = () => {
     } else {
       return (
         <div className="min-vh-100 w-100 py-4 d-flex flex-column align-items-center justify-content-center">
-          <form className="w-75 p-4 d-flex flex-column rounded shadow-sm">
+          <form className="w-100 p-4 d-flex flex-column">
             <h5>Book Information</h5>
             {/* Cover */}
             <div className="w-100 my-1 d-flex flex-column flex-sm-row align-items-start justify-content-between">

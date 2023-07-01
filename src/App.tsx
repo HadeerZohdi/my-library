@@ -18,15 +18,15 @@ const User = localStorage.getItem("@my-library");
 const router = createBrowserRouter([
   {
     path: "/",
-    element: User ? <AppLayout /> : <Navigate to="/signin" />,
+    element: User ? <AppLayout /> : <Navigate to="signin" />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/my-library", element: <MyLibrary /> },
       { path: "/book-form", element: <AddBook /> },
     ],
   },
-  { path: "/signin", element: <Signin /> },
-  { path: "/signup", element: <Signup /> },
+  { path: "signin", element: <Signin /> },
+  { path: "signup", element: <Signup /> },
 ]);
 
 function App() {
